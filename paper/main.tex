@@ -1,0 +1,78 @@
+\documentclass{elsarticle}
+
+% Packages ====================================================================
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% Package set-up ==============================================================
+
+% Article info ================================================================ 
+\author[1]{Juan Valencia}
+\ead{jmvalenciae@unal.edu.co}
+\title{Some strange Title}
+
+\begin{document}
+\begin{keyword}
+    MRI \sep CNNs
+\end{keyword}
+\begin{abstract}
+    Elit possimus deserunt at minima facilis, qui ea. Obcaecati nobis facilis at
+    corrupti optio Ea mollitia earum similique necessitatibus adipisci,
+    obcaecati. Esse esse suscipit ipsa id totam Quia rerum praesentium debitis
+    illum consequatur et? Eum fuga fugit provident fuga eum cumque, ullam
+    tempore quaerat Repellendus commodi dolor repellendus ad illum
+\end{abstract}
+\maketitle
+\section{Introduction}
+Elit doloribus quod nulla minima hic, impedit? Praesentium velit minus soluta ut
+ipsum ab. Nam maiores distinctio rerum laboriosam sit Tempora esse sapiente
+tempore corporis iste nam ullam. Blanditiis suscipit consequuntur rerum
+repellendus delectus! Optio reprehenderit omnis numquam perspiciatis fugit.
+Asperiores illum reiciendis facilis dicta laboriosam Officiis laboriosam dolorem
+nisi dolorum minima Eaque aperiam impedit quasi quod animi Molestiae quae ipsum
+quas saepe maiores, minus molestiae Voluptatum nisi magni nesciunt quod dicta?
+Quisquam quod expedita in totam enim? Eum quaerat inventore tenetur nobis quidem
+nostrum voluptas Modi voluptate quia dolores placeat laborum repellendus, magnam
+minus, quod. Enim modi quod pariatur?\par
+
+\section{Materials and Methods}
+
+For a 3D \emph{mri} image input $X_n = \{x_n^{s c a} \in \mathbb{R} | s \land c
+\land a \in \mathbb{N}\}$ where  $s < S$, $c < C $ and $a < A$ \footnote{$S$,
+$C$ and $A$ represents the number of \emph{sagittal}, \emph{coronal} and
+\emph{axial} slices respectively};  we want to label each of its pixels to get a
+labeled image output $Y_n = \{y_n^{sca} \in \{0, 1\}\}$. The image is obtained
+using a model $f : \mathbb{R}^{S \times C \times A} \mapsto \mathbb{R}^{S \times
+C \times A} $.
+\begin{equation}
+    \hat{Y}_n = f(X_n) = (\Psi_3 \circ \Psi_2 \circ \Psi_1) (X_n)
+\end{equation}
+$\Psi_1$, $\Psi_2$ and $\Psi_3$ correspond to the model segmentation, cropping
+and correction steps respectively.\par
+
+
+\subsection{CNNs}
+The Segmentation and correction steps use the same approach, which consists of
+passing $X_n$ in three different axial views through a model $\Phi$, which is a
+sequence of residual block layers. For Example $X_n$ can be represented as a set
+of sagittal slices $X_n = \{x_n^s \in \mathcal{R}^{C \times A}\}_{s=1}^S$ and we
+want to get a set of sagittal slices $Y_n = \{y_n^s \in [0, 1]^{C \times
+A}\}_{s=1}^S$:
+\begin{equation}
+    Y_n = \Phi(X_n) = (\phi_L \circ \cdots \circ \phi_l \circ \cdots \circ
+    \phi_1)(X_n)
+\end{equation}
+where $\phi_l$ is a residual block layer of the model $\Phi$.\par
+
+$\Phi$ model performance depends of $\omega$ a set of parameters which must be
+optimized as follows:
+\begin{equation}
+    \omega^* = \arg \min_{\omega} \mathcal{L}(Y_n, \Phi(X_n))
+\end{equation}
+being $\mathcal{L}(Y_n, \Phi(X_n)) = \frac{1}{|Y_n|} \| Y_n - \Phi(X_n)\|_F^2$ 
+
+\section{Implementation}
+\section{Results and Discussion}
+\section{Conclusions}
+\end{document}
