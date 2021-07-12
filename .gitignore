@@ -2,3 +2,7 @@ paper/*
 !paper/*.tex
 references/
 .kaggle/
+*.png
+input/
+**/__pycache__/
+tags
