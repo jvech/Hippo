@@ -33,6 +33,7 @@ def scores2D(test_ds, model):
     for x, y in test_ds:
         x = tf.expand_dims(x, 0)
         y_pred = model.predict(x)
+        y_pred = tf.where(y_pred > 0.5, 1, 0)
 
         scores.append(get_scores(y[...,0], y_pred[0,...,0]))
     return np.array(scores).mean(axis=0), np.array(scores).std(axis=0)
