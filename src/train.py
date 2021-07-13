@@ -33,6 +33,7 @@ if __name__ == "__main__":
 
     EPOCHS = int(args["--epochs"])
     BATCH_SIZE = int(args["--batch"])
+    MODEL_PATH = args["--model"]
     IMG_PATH = path.join(args["<imgs>"])
     LABEL_PATH = path.join(args["<masks>"])
     IMG_PATHS = np.sort([path.join(IMG_PATH, img) for img in os.listdir(IMG_PATH)])
@@ -44,7 +45,8 @@ if __name__ == "__main__":
     ds2D_slices = data.get_2D_dataset(ds_train, AXIS)
     ds2D_train = ds2D_slices.filter(lambda x, y: tf.reduce_min(y) != tf.reduce_max(y))
 
-    for DS2D_SIZE, (x, y) in enumerate(ds2D_slices): pass
+    for DS2D_SIZE, (x, y) in enumerate(ds2D_train): pass
+    DS2D_SIZE += 1
 
     ds2D_train = ds2D_train.batch(BATCH_SIZE, drop_remainder=True).shuffle(buffer_size=1000)
     ds2D_train = ds2D_train.prefetch(tf.data.AUTOTUNE)
@@ -57,3 +59,4 @@ if __name__ == "__main__":
                            epochs=EPOCHS,
                            steps_per_epoch=DS2D_SIZE//BATCH_SIZE)
 
+    model.save(MODEL_PATH)
