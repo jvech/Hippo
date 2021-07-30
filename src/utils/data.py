@@ -26,9 +26,9 @@ def mri_preprocess(ds):
         y = tf.where(y!=0, 1, 0)
         return x, y
 
-    def extract_roi(x, y, ijk=(40, 50, 30), whl=(100, 100, 100)):
-        i, j, k = ijk
-        w, h, l = whl
+    def extract_roi(x, y):
+        i, j, k = np.array(x.shape)//2 - 60
+        w, h, l = 150, 150, 150
         return x[i:i+w, j:j+h, k:k+l], y[i:i+w, j:j+h, k:k+l]
 
     pre_ds = ds.map(lambda x, y: preprocessing3D(x, y))

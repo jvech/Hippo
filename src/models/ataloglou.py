@@ -42,7 +42,7 @@ def AtaloglouCNN(input_layer):
     x9 = Conv2D(1, 3, padding="same", activation="linear")(x8)
     return x9
 
-def AtaloglouSeg(input_shape=(100, 100, 1)):
+def AtaloglouSeg(input_shape=(120, 120, 1)):
     inputs = Input(shape=input_shape)
 
     out = AtaloglouCNN(inputs)
@@ -56,7 +56,7 @@ def AtaloglouSeg(input_shape=(100, 100, 1)):
                   metrics = BinaryAccuracy())
     return model
 
-def AtaloglouCorr(in_shape=(100, 100, 2)):
+def AtaloglouCorr(in_shape=(100, 100, 1)):
     input_raw = Input(shape=in_shape)
     input_mask = Input(shape=in_shape)
     x1 = Concatenate()([input_raw, input_mask])
@@ -77,7 +77,21 @@ def AtaloglouCorr(in_shape=(100, 100, 2)):
 
     return model
 
+def AtaloglouSeg3D(mri_in, sagit, coron, axial):
+
+    X = tf.expand_dims(mri_in, -1)
+    X_sagit = X
+    X_coron = tf.transpose(X, perm=[1, 0, 2, 3])
+    X_axial = tf.transpose(X, perm=[2, 0, 1, 3])
+
+    X_sagit = sagit.predict(X_sagit)
+    X_coron = tf.transpose(coron.predict(X_coron), perm=[1, 0, 2, 3])
+    X_axial = tf.transpose(axial.predict(X_axial), perm=[1, 2, 0, 3])
+
+    return Average()([X_sagit, X_coron, X_axial])
+
+
 if __name__ == "__main__":
-    axial_seg = AtaloglouSeg()
-    plot_model(axial_seg, "model.png", show_dtype=False, rankdir="TB",
+    axial_cor = AtaloglouCorr()
+    plot_model(axial_cor, "model.png", show_dtype=False, rankdir="TB",
                show_shapes=False, show_layer_names=False)

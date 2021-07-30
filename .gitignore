@@ -6,3 +6,4 @@ references/
 input/
 **/__pycache__/
 tags
+weights/

@@ -38,6 +38,16 @@ def scores2D(test_ds, model):
         scores.append(get_scores(y[...,0], y_pred[0,...,0]))
     return np.array(scores).mean(axis=0), np.array(scores).std(axis=0)
 
+def scores3D(test_ds, model):
+    scores = []
+    for X, Y in test_ds:
+        x = tf.expand_dims(X, -1)
+        y_pred = model.predict(x)
+        y_pred = tf.where(y_pred > 0.5, 1, 0)
+
+        scores.append(get_scores(Y, y_pred[...,0]))
+    return np.array(scores).mean(axis=0), np.array(scores).std(axis=0)
+
 def print_scores(name, scores):
     print(name.upper())
     for i,mt in enumerate(['Jaccar','Dice','Precision','Recall']):
