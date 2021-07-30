@@ -80,7 +80,7 @@ def model_eval(args: dict) -> None:
     ds_train = data.mri_preprocess(ds)
 
     scores = []
-    for X, Y in ds_train.take(3):
+    for X, Y in ds_train:
         y_pred = ataloglou.AtaloglouSeg3D(X, **seg_models)
         y_pred = tf.where(y_pred > 0.5, 1, 0)[..., 0]
         scores.append(metrics.get_scores(Y, y_pred))

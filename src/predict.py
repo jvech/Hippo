@@ -83,8 +83,8 @@ def predict(args: dict) -> None:
     X = mri.get_fdata()
 
     # PREDICT MRI
-    x1, y1, z1 = np.array(X.shape)//2 - 50
-    x2, y2, z2 = np.array(X.shape)//2 + 50
+    x1, y1, z1 = np.array(X.shape)//2 - 75
+    x2, y2, z2 = np.array(X.shape)//2 + 75
 
     Y = np.zeros_like(X, dtype="float64")
     Y = Y
