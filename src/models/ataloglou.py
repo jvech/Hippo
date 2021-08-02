@@ -53,7 +53,7 @@ def AtaloglouSeg(input_shape=(120, 120, 1)):
 
     model.compile(optimizer = "Adam",
                   loss = "mse",
-                  metrics = MeanIoU(num_classes=2, name="IoU"))
+                  metrics = BinaryAccuracy())
     return model
 
 def AtaloglouCorr(in_shape=(100, 100, 1)):
@@ -73,7 +73,7 @@ def AtaloglouCorr(in_shape=(100, 100, 1)):
 
     model.compile(optimizer = "Adam",
                   loss = "mse",
-                  metrics = MeanIoU(num_classes=2, name="IoU"))  
+                  metrics = BinaryAccuracy())
 
     return model
 
