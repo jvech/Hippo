@@ -9,7 +9,7 @@ from tensorflow.keras.layers import (Input, Conv2D, ReLU,
                                      BatchNormalization,
                                      Add)
 
-from tensorflow.keras.metrics import BinaryAccuracy
+from tensorflow.keras.metrics import BinaryAccuracy, MeanIoU
 from tensorflow.keras.initializers import RandomNormal, RandomUniform, GlorotUniform
 from tensorflow.keras.optimizers import Adam, RMSprop
 
@@ -53,7 +53,7 @@ def AtaloglouSeg(input_shape=(120, 120, 1)):
 
     model.compile(optimizer = "Adam",
                   loss = "mse",
-                  metrics = BinaryAccuracy())
+                  metrics = MeanIoU(num_classes=1, name="IoU"))
     return model
 
 def AtaloglouCorr(in_shape=(100, 100, 1)):
@@ -73,7 +73,7 @@ def AtaloglouCorr(in_shape=(100, 100, 1)):
 
     model.compile(optimizer = "Adam",
                   loss = "mse",
-                  metrics = BinaryAccuracy())  
+                  metrics = MeanIoU(num_classes=1, name="IoU"))  
 
     return model
 

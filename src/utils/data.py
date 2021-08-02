@@ -11,10 +11,12 @@ def read_data(img_paths, label_paths):
         for X, Y in zip(img_paths, label_paths):
             yield (tf.constant(nib.load(X).get_fdata(), "float64"),
                    tf.constant(nib.load(Y).get_fdata(), "float64"))
+
+    DS_DIMS = nib.load(img_paths[0]).get_fdata().shape
     ds = tf.data.Dataset.from_generator(
                 mri_read,
-                output_signature = (tf.TensorSpec((197, 233, 189), tf.float64), 
-                                    tf.TensorSpec((197, 233, 189), tf.float64))
+                output_signature = (tf.TensorSpec(DS_DIMS, tf.float64), 
+                                    tf.TensorSpec(DS_DIMS, tf.float64))
                 )
 
     return ds
@@ -27,7 +29,7 @@ def mri_preprocess(ds):
         return x, y
 
     def extract_roi(x, y):
-        i, j, k = np.array(x.shape)//2 - 60
+        i, j, k = np.array(x.shape)//2 - 75
         w, h, l = 150, 150, 150
         return x[i:i+w, j:j+h, k:k+l], y[i:i+w, j:j+h, k:k+l]
 
