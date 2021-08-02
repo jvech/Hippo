@@ -72,10 +72,12 @@ if __name__ == "__main__":
 
     if args["--history"]:
         import matplotlib.pyplot as plt
-        fig, ax = plt.subplots(1, 2)
+        fig, ax = plt.subplots(1, 2, figsize=(15, 4))
         ax[0].plot(model_hist.history["loss"])
         ax[1].plot(model_hist.history["IoU"])
         ax[1].set_ylim([0, 1])
-        fig.savefig(f"{MODEL_PATH[:-2]}.png")
+        ax[0].grid(linestyle=":")
+        ax[1].grid(linestyle=":")
+        fig.savefig(f"{MODEL_PATH[:-3]}.png")
 
     model.save(MODEL_PATH)
