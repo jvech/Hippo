@@ -42,7 +42,7 @@ if __name__ == "__main__":
     # LOADING DATA
     if args["<preds>"] != None:
         from utils import corr_data as data
-        PRED_PATH = path.join(args["<pred>"])
+        PRED_PATH = path.join(args["<preds>"])
         PRED_PATHS = np.sort([path.join(PRED_PATH, img) for img in os.listdir(PRED_PATH)])
         ds = data.read_data(IMG_PATHS, LABEL_PATHS, PRED_PATHS)
     else:
