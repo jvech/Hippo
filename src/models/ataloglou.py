@@ -90,6 +90,22 @@ def AtaloglouSeg3D(mri_in, sagit, coron, axial):
 
     return Average()([X_sagit, X_coron, X_axial])
 
+def AtaloglouCorr3D(mri_in, mask_in, sagit, coron, axial):
+    X = tf.expand_dims(mri_in, -1)
+    X_sagit = X
+    X_coron = tf.transpose(X, perm=[1, 0, 2, 3])
+    X_axial = tf.transpose(X, perm=[2, 0, 1, 3])
+
+    Z = tf.expand_dims(mask_in, -1)
+    Z_sagit = Z
+    Z_coron = tf.transpose(Z, perm=[1, 0, 2, 3])
+    Z_axial = tf.transpose(Z, perm=[2, 0, 1, 3])
+
+    X_sagit = sagit.predict([X_sagit, Z_sagit])
+    X_coron = tf.transpose(coron.predict([X_coron, Z_coron]), perm=[1, 0, 2, 3])
+    X_axial = tf.transpose(axial.predict([X_axial, Z_axial]), perm=[1, 2, 0, 3])
+
+    return Average()([X_sagit, X_coron, X_axial])
 
 if __name__ == "__main__":
     axial_cor = AtaloglouCorr()

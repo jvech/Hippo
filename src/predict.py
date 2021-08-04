@@ -94,9 +94,9 @@ def predict(args: dict) -> None:
 
     if not args["--seg-only"]:
         ## TODO
+        Y = np.where(Y > 0.5, 1, 0).astype("int32")
         pass
 
-    Y = np.where(Y > 0.5, 1, 0).astype("int32")
     mri_out = nib.Nifti1Image(Y, mri.affine, mri.header)
 
     nib.save(mri_out, PRED_PATH)
@@ -104,7 +104,9 @@ def predict(args: dict) -> None:
 
     if args["--verbose"]:
         from nilearn import plotting as plot
-        plot.plot_roi(PRED_PATH, IMG_PATH)
+        Z = np.where(Y > 0.5, 1, 0).astype("int32")
+        mri_show = nib.Nifti1Image(Z, mri.affine, mri.header)
+        plot.plot_roi(mri_show, IMG_PATH)
         plot.show()
 
 
