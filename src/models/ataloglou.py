@@ -59,15 +59,15 @@ def AtaloglouSeg(input_shape=(120, 120, 1)):
 def AtaloglouCorr(in_shape=(100, 100, 1)):
     input_raw = Input(shape=in_shape)
     input_mask = Input(shape=in_shape)
-    x1 = Concatenate()([input_raw, input_mask])
 
+    x1 = Concatenate()([input_raw, input_mask])
     x2 = AtaloglouCNN(x1)
     replace_out = (tf.nn.tanh(x2) + 1)/2
 
     x3 = Concatenate()([input_raw, input_mask, replace_out])
     refine_out = AtaloglouCNN(x3)
-
-    out = Add()([refine_out, replace_out])
+    out = (tf.nn.tanh(refine_out) + 1) / 2
+    #out = Add()([refine_out, replace_out])
 
     model = keras.Model(inputs=[input_raw, input_mask], outputs=out)
 
