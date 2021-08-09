@@ -6,6 +6,12 @@ import os
 from os import path
 
 
+def center(X):
+    c_x = np.sum(np.sum(X, axis=(1, 2)) * np.arange(X.shape[0])) / np.sum(X)
+    c_y = np.sum(np.sum(X, axis=(0, 2)) * np.arange(X.shape[1])) / np.sum(X)
+    c_z = np.sum(np.sum(X, axis=(0, 1)) * np.arange(X.shape[2])) / np.sum(X)
+    return int(c_x), int(c_y), int(c_z)
+
 def read_data(img_paths, pred_paths, label_paths):
     def mri_read():
         for X, Z, Y in zip(img_paths, pred_paths, label_paths):
@@ -36,12 +42,6 @@ def mri_preprocess(ds):
         i, j, k = ijk
         w, h, l = whl
         return (x[i:i+w, j:j+h, k:k+l], z[i:i+w, j:j+h, k:k+l]), y[i:i+w, j:j+h, k:k+l]
-
-    def center(X):
-        c_x = np.sum(np.sum(X, axis=(1, 2)) * np.arange(X.shape[0])) / np.sum(X)
-        c_y = np.sum(np.sum(X, axis=(0, 2)) * np.arange(X.shape[1])) / np.sum(X)
-        c_z = np.sum(np.sum(X, axis=(0, 1)) * np.arange(X.shape[2])) / np.sum(X)
-        return int(c_x), int(c_y), int(c_z)
 
     pre_ds = ds.map(lambda x, y: preprocessing3D(x, y))
     centers = np.array([center(y) for (x, z), y in pre_ds]).mean(axis=0).astype("int")

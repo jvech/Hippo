@@ -2,8 +2,8 @@
 """Model Predict
 
 Usage: 
-    eval.py [options] <img> <models>
-    eval.py (-h | --help)
+    predict.py [options] <img> <models_folder>
+    predict.py (-h | --help)
 
 Options:
     -h --help           Show this message

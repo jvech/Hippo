@@ -81,9 +81,19 @@ def model_eval(args: dict) -> None:
 
     scores = []
     for X, Y in ds_train:
-        y_pred = ataloglou.AtaloglouSeg3D(X, **seg_models)
-        y_pred = tf.where(y_pred > 0.5, 1, 0)[..., 0]
-        scores.append(metrics.get_scores(Y, y_pred))
+        y_pred = ataloglou.AtaloglouSeg3D(X, **seg_models)[..., 0]
+        y = Y
+        if not args["--seg-only"]:
+            from utils.corr_data import center
+            ijk = np.array(center(y_pred)).astype("int") - 50
+            ijk = tuple(0 if i < 0 else i for i in ijk)
+            i, j, k = ijk
+            y_pred = y_pred[i:i+100, j:j+100, k:k+100]
+            x = X[i:i+100, j:j+100, k:k+100]
+            y = Y[i:i+100, j:j+100, k:k+100]
+            y_pred = ataloglou.AtaloglouCorr3D(x, y_pred, **corr_models)[..., 0]
+        y_pred = tf.where(y_pred > 0.5, 1, 0)
+        scores.append(metrics.get_scores(y, y_pred))
 
     scores = np.array(scores).mean(axis=0), np.array(scores).std(axis=0)
     metrics.print_scores("Ataloglou performance", scores)
