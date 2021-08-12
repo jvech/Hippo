@@ -46,6 +46,7 @@ def mri_preprocess(ds):
     pre_ds = ds.map(lambda x, y: preprocessing3D(x, y))
     centers = np.array([center(y) for (x, z), y in pre_ds]).mean(axis=0).astype("int")
     ijk = tuple(centers.astype("int") - 50)
+    ijk = tuple(0 if i < 0 else i for i in ijk)
     return pre_ds.map(lambda x, y: extract_roi(x, y, ijk=ijk))
 
 def get_2D_dataset(ds, axis):

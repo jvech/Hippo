@@ -44,7 +44,7 @@ if __name__ == "__main__":
         from utils import corr_data as data
         PRED_PATH = path.join(args["<preds>"])
         PRED_PATHS = np.sort([path.join(PRED_PATH, img) for img in os.listdir(PRED_PATH)])
-        ds = data.read_data(IMG_PATHS, LABEL_PATHS, PRED_PATHS)
+        ds = data.read_data(IMG_PATHS, PRED_PATHS, LABEL_PATHS)
     else:
         from utils import data
         ds = data.read_data(IMG_PATHS, LABEL_PATHS)

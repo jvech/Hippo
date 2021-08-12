@@ -2,7 +2,7 @@ import numpy as np
 import tensorflow as tf
 
 from tensorflow import keras
-from tensorflow.keras import layers
+from tensorflow.keras import layers, Model
 from tensorflow.keras.utils import plot_model
 from tensorflow.keras.layers import (Input, Conv2D, ReLU, 
                                      Concatenate, Average, 
@@ -49,7 +49,7 @@ def AtaloglouSeg(input_shape=(120, 120, 1)):
 
     out = (tf.nn.tanh(out) + 1)/2
 
-    model = keras.Model(inputs=inputs, outputs = out) 
+    model = Model(inputs=inputs, outputs = out) 
 
     model.compile(optimizer = "Adam",
                   loss = "mse",
@@ -69,7 +69,7 @@ def AtaloglouCorr(in_shape=(100, 100, 1)):
     out = (tf.nn.tanh(refine_out) + 1) / 2
     #out = Add()([refine_out, replace_out])
 
-    model = keras.Model(inputs=[input_raw, input_mask], outputs=out)
+    model = Model(inputs=[input_raw, input_mask], outputs=out)
 
     model.compile(optimizer = "Adam",
                   loss = "mse",
