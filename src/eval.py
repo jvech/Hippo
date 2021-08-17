@@ -86,7 +86,9 @@ def model_eval(args: dict) -> None:
         if not args["--seg-only"]:
             from utils.corr_data import center
             ijk = np.array(center(y_pred)).astype("int") - 50
-            ijk = tuple(0 if i < 0 else i for i in ijk)
+            for i, (value, shape) in enumerate(zip(ijk, y_pred.shape)):
+                ijk[i] = (0 if value < 0 else value)
+                ijk[i] = (shape - 100 if value + 100 > shape else value)
             i, j, k = ijk
             y_pred = y_pred[i:i+100, j:j+100, k:k+100]
             x = X[i:i+100, j:j+100, k:k+100]
