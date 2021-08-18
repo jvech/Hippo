@@ -69,9 +69,6 @@ def model_eval(args: dict) -> None:
 
     if not args["--seg-only"]:
         from utils.corr_data import center
-        sagit_model_corr = tf.keras.models.load_model(SAGIT_PATH_CORR)
-        coron_model_corr = tf.keras.models.load_model(CORON_PATH_CORR)
-        axial_model_corr = tf.keras.models.load_model(AXIAL_PATH_CORR)
         corr_models = {'sagit': sagit_model_corr, 
                        'coron': coron_model_corr, 
                        'axial': axial_model_corr}

@@ -36,7 +36,7 @@ def predict(args: dict) -> None:
     # CLI ARGUMENTS
     IMG_PATH = path.join(args["<img>"])
     PRED_PATH = path.join(args["-o"])
-    MODEL_PATHS = path.join(args["<models>"])
+    MODEL_PATHS = path.join(args["<models_folder>"])
 
     #LOAD MODEL
     for File in os.listdir(MODEL_PATHS):
@@ -71,9 +71,7 @@ def predict(args: dict) -> None:
                   'axial': axial_model}
 
     if not args["--seg-only"]:
-        sagit_model_corr = tf.keras.models.load_model(SAGIT_PATH_CORR)
-        coron_model_corr = tf.keras.models.load_model(CORON_PATH_CORR)
-        axial_model_corr = tf.keras.models.load_model(AXIAL_PATH_CORR)
+        from utils.corr_data import center
         corr_models = {'sagit': sagit_model_corr, 
                        'coron': coron_model_corr, 
                        'axial': axial_model_corr}
@@ -88,14 +86,21 @@ def predict(args: dict) -> None:
 
     Y = np.zeros_like(X, dtype="float64")
     Y = Y
-    X_in = (X - X.mean()) / X.std()
-    X_in = X_in[x1:x2, y1:y2, z1:z2]
+    X = (X - X.mean()) / X.std()
+    X_in = X[x1:x2, y1:y2, z1:z2]
     Y[x1:x2, y1:y2, z1:z2] = ataloglou.AtaloglouSeg3D(X_in, **seg_models)[..., 0]
 
     if not args["--seg-only"]:
-        ## TODO
+        ijk = np.array(center(Y)).astype("int") - 50
+        for i, (value, shape) in enumerate(zip(ijk, Y.shape)):
+            ijk[i] = (0 if value < 0 else value)
+            ijk[i] = (shape - 100 if value + 100 > shape else ijk[i])
+        i1, j1, k1 = ijk
+        i2, j2, k2 = ijk + 100
+        y_pred = Y[i1:i2, j1:j2, k1:k2]
+        X_in = X[i1:i2, j1:j2, k1:k2]
+        Y[i1:i2, j1:j2, k1:k2] = ataloglou.AtaloglouCorr3D(X_in, y_pred, **corr_models)[..., 0]
         Y = np.where(Y > 0.5, 1, 0).astype("int32")
-        pass
 
     mri_out = nib.Nifti1Image(Y, mri.affine, mri.header)
 
