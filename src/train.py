@@ -21,10 +21,9 @@ import numpy as np
 import tensorflow as tf
 
 from models import ataloglou
+from tensorflow.keras.callbacks import LearningRateScheduler
 
-if __name__ == "__main__":
-    args = docopt(__doc__) # I Love You
-
+def train(args):
     # CLI arguments
     if args["sagital"]: AXIS = 0
     elif args["coronal"]: AXIS = 1
@@ -66,9 +65,11 @@ if __name__ == "__main__":
         model = ataloglou.AtaloglouCorr(in_shape=(100, 100, 1))
 
     # TRAINING
+    Lr_callback = LearningRateScheduler(lambda epoch: 5 * 10e-5 * tf.math.exp(-0.175 * epoch))
     model_hist = model.fit(ds2D_train.repeat(),
                            epochs=EPOCHS,
-                           steps_per_epoch=DS2D_SIZE//BATCH_SIZE)
+                           steps_per_epoch=DS2D_SIZE//BATCH_SIZE,
+                           callbacks=[Lr_callback])
 
     if args["--history"]:
         import matplotlib.pyplot as plt
@@ -82,3 +83,8 @@ if __name__ == "__main__":
 
     model.save(MODEL_PATH)
     tf.keras.backend.clear_session()
+
+if __name__ == "__main__":
+    args = docopt(__doc__) # I Love You
+    train(args)
+
