@@ -68,6 +68,7 @@ def model_eval(args: dict) -> None:
                   'axial': axial_model}
 
     if not args["--seg-only"]:
+        from utils.corr_data import center
         sagit_model_corr = tf.keras.models.load_model(SAGIT_PATH_CORR)
         coron_model_corr = tf.keras.models.load_model(CORON_PATH_CORR)
         axial_model_corr = tf.keras.models.load_model(AXIAL_PATH_CORR)
@@ -84,11 +85,10 @@ def model_eval(args: dict) -> None:
         y_pred = ataloglou.AtaloglouSeg3D(X, **seg_models)[..., 0]
         y = Y
         if not args["--seg-only"]:
-            from utils.corr_data import center
             ijk = np.array(center(y_pred)).astype("int") - 50
             for i, (value, shape) in enumerate(zip(ijk, y_pred.shape)):
                 ijk[i] = (0 if value < 0 else value)
-                ijk[i] = (shape - 100 if value + 100 > shape else value)
+                ijk[i] = (shape - 100 if value + 100 > shape else ijk[i])
             i, j, k = ijk
             y_pred = y_pred[i:i+100, j:j+100, k:k+100]
             x = X[i:i+100, j:j+100, k:k+100]
