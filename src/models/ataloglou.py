@@ -61,8 +61,8 @@ def AtaloglouCorr(in_shape=(100, 100, 1)):
     input_mask = Input(shape=in_shape)
 
     x1 = Concatenate()([input_raw, input_mask])
-    x2 = AtaloglouCNN(x1)
-    replace_out = (tf.nn.tanh(x2) + 1)/2
+    replace_out = AtaloglouCNN(x1)
+    #replace_out = (tf.nn.tanh(x2) + 1)/2
 
     x3 = Concatenate()([input_raw, input_mask, replace_out])
     refine_out = AtaloglouCNN(x3)
