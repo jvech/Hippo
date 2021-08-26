@@ -14,8 +14,8 @@ from tensorflow.keras.initializers import RandomNormal, RandomUniform, GlorotUni
 from tensorflow.keras.optimizers import Adam, RMSprop
 
 def CNN(in_layer):
-    w_init0 = RandomUniform(minval=-1.0, maxval=1.0, seed=42)
-    w_init1 = RandomUniform(minval=-1.0, maxval=1.0, seed=42)
+    w_init0 = GlorotUniform(seed=42)
+    w_init1 = GlorotUniform(seed=42)
 
     x = Conv2D(128, 3, padding="same", kernel_initializer=w_init0)(in_layer)
     x = BatchNormalization()(x)
@@ -53,7 +53,7 @@ def AtaloglouSeg(input_shape=(120, 120, 1)):
 
     model.compile(optimizer = "Adam",
                   loss = "mse",
-                  metrics = BinaryAccuracy())
+                  metrics = MeanIoU(num_classes=2, name="IoU"))
     return model
 
 def AtaloglouCorr(in_shape=(100, 100, 1)):
@@ -73,7 +73,7 @@ def AtaloglouCorr(in_shape=(100, 100, 1)):
 
     model.compile(optimizer = "Adam",
                   loss = "mse",
-                  metrics = BinaryAccuracy())
+                  metrics = MeanIoU(num_classes=2, name="IoU"))
 
     return model
 

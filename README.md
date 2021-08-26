@@ -2,6 +2,7 @@
 ## INSTALLATION
 ```
 git clone https://github.com/jvech/Hippo.git
+cd src
 ```
 
 ## USAGE

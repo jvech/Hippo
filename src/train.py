@@ -18,10 +18,25 @@ import os
 from docopt import docopt
 from os import path
 import numpy as np
+try: import silence_tensorflow.auto
+except ModuleNotFoundError: pass
 import tensorflow as tf
 
 from models import ataloglou
 from tensorflow.keras.callbacks import LearningRateScheduler
+
+def history_plot(history: dict, model_path):
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots(1, 2, figsize=(15, 4), sharex=True)
+    for key in history:
+        if "loss" in key:
+            ax[0].plot(history[key])
+        else:
+            ax[1].plot(history[key])
+    ax[1].set_ylim([0, 1])
+    ax[0].grid(linestyle=":")
+    ax[1].grid(linestyle=":")
+    fig.savefig(f"{model_path[:-3]}.png")
 
 def train(args):
     # CLI arguments
@@ -72,14 +87,7 @@ def train(args):
                            callbacks=[Lr_callback])
 
     if args["--history"]:
-        import matplotlib.pyplot as plt
-        fig, ax = plt.subplots(1, 2, figsize=(15, 4))
-        ax[0].plot(model_hist.history["loss"])
-        ax[1].plot(model_hist.history["binary_accuracy"])
-        ax[1].set_ylim([0, 1])
-        ax[0].grid(linestyle=":")
-        ax[1].grid(linestyle=":")
-        fig.savefig(f"{MODEL_PATH[:-3]}.png")
+        history_plot(model_hist.history, MODEL_PATH)
 
     model.save(MODEL_PATH)
     tf.keras.backend.clear_session()
