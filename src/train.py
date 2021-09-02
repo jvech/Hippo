@@ -4,12 +4,14 @@
 Usage: 
     train.py [options] <imgs> <masks> (sagital | coronal | axial) 
     train.py [options] <imgs> <masks> <preds> (sagital | coronal | axial)
+    train.py [options] retrain <model> <imgs> <masks> (sagital | coronal | axial)
+    train.py [options] retrain <model> <imgs> <masks> <preds> (sagital | coronal | axial)
     train.py (-h | --help)
 
 Options:
     -h --help           Show this message
     -H --history        Plot the history of the model's performance
-    --model <path>      Save the trained model [default: ./model.h5].
+    -o <file>           Save the trained model into <file> [default: ./model.h5].
     --batch <int>       Batch size [default: 8]
     --epochs <int>      Number of epochs [default: 40]
 """
@@ -38,6 +40,14 @@ def history_plot(history: dict, model_path):
     ax[1].grid(linestyle=":")
     fig.savefig(f"{model_path[:-3]}.png")
 
+def load_model(args):
+    if args["retrain"]:
+        return tf.keras.models.load_model(args["<model>"])
+    if args["<preds>"]:
+        return ataloglou.AtaloglouCorr(in_shape=(100, 100, 1))
+    return ataloglou.AtaloglouSeg(input_shape=(150, 150, 1))
+
+
 def train(args):
     # CLI arguments
     if args["sagital"]: AXIS = 0
@@ -47,7 +57,7 @@ def train(args):
 
     EPOCHS = int(args["--epochs"])
     BATCH_SIZE = int(args["--batch"])
-    MODEL_PATH = args["--model"]
+    MODEL_PATH = args["-o"]
     IMG_PATH = path.join(args["<imgs>"])
     LABEL_PATH = path.join(args["<masks>"])
     IMG_PATHS = np.sort([path.join(IMG_PATH, img) for img in os.listdir(IMG_PATH)])
@@ -74,10 +84,7 @@ def train(args):
     ds2D_train = ds2D_train.prefetch(tf.data.AUTOTUNE)
 
     # LOADING MODEL
-    if not args["<preds>"]:
-        model = ataloglou.AtaloglouSeg(input_shape=(150, 150, 1))
-    else:
-        model = ataloglou.AtaloglouCorr(in_shape=(100, 100, 1))
+    model = load_model(args)
 
     # TRAINING
     Lr_callback = LearningRateScheduler(lambda epoch: 5 * 10e-5 * tf.math.exp(-0.175 * epoch))

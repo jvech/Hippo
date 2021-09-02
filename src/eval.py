@@ -2,7 +2,7 @@
 """Model Eval
 
 Usage: 
-    eval.py [options] <imgs> <masks> <models>
+    eval.py [options] <imgs> <masks> <models_path>
     eval.py (-h | --help)
 
 Options:

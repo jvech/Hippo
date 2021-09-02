@@ -8,7 +8,7 @@ Usage:
 Options:
     -h --help           Show this message
     -s --seg-only       Use only the Segmentation models
-    -o <file>           place de output into <file> [default: ./prediction.nii]
+    -o <file>           Place de output into <file> [default: ./prediction.nii]
     -v --verbose        Show the results of the prediction
 """
 import os
