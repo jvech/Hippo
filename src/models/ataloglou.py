@@ -14,8 +14,8 @@ from tensorflow.keras.initializers import RandomNormal, RandomUniform, GlorotUni
 from tensorflow.keras.optimizers import Adam, RMSprop
 
 def CNN(in_layer):
-    w_init0 = GlorotUniform(seed=42)
-    w_init1 = GlorotUniform(seed=42)
+    w_init0 = GlorotUniform()
+    w_init1 = GlorotUniform()
 
     x = Conv2D(128, 3, padding="same", kernel_initializer=w_init0)(in_layer)
     x = BatchNormalization()(x)

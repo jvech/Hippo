@@ -82,6 +82,7 @@ def train(args):
 
     ds2D_train = ds2D_train.batch(BATCH_SIZE, drop_remainder=True).shuffle(buffer_size=100)
     ds2D_train = ds2D_train.prefetch(tf.data.AUTOTUNE)
+    ds2D_train = ds2D_train.cache()
 
     # LOADING MODEL
     model = load_model(args)
